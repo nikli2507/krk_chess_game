@@ -11,7 +11,7 @@ The project was done for academic purposes.
 ## Features
 
 - Set up custom board configurations.
-- Automatically find a good move for the given board configuration and force the win for the program-
+- Automatically find a good move for the given board configuration and force the win for the program
 - Provides a simple web interface for interaction.
 
 ## Requirements
@@ -50,19 +50,19 @@ Instead of step 3 and 4 do:
 1. Build the docker image:
 
     ```bash
-        docker build -t krk_chess_game .
+    docker build -t krk_chess_game .
     ```
 
 2. Tag the image to your cloud project:
 
     ```bash
-        docker tag krk_chess_game gcr.io/<project_id>/krk_chess_game
+    docker tag krk_chess_game gcr.io/<project_id>/krk_chess_game
     ```
 
 3. Push the image to your cloud project
 
     ```bash
-        docker push gcr.io/<project_id>/krk_chess_game
+    docker push gcr.io/<project_id>/krk_chess_game
     ```
 
 4. Run the image in a container in the Google Cloud UI
