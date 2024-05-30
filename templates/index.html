@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chess Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chess.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chessboard-1.0.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vis.min.js') }}"></script>
+</head>
+<body>
+    <div id="board" style="width: 400px; margin-bottom: 20px;"></div>
+    <div id="controls">
+        <button id="restartBtn">Restart</button>
+        <button id="customPositionBtn">Set Custom Position</button>
+        <div id="setupControls" style="display: none;">
+            <label for="whiteKing">White King:</label>
+            <input type="text" id="whiteKing" placeholder="e1">
+            <label for="blackKing">Black King:</label>
+            <input type="text" id="blackKing" placeholder="e8">
+            <label for="whiteRook">White Rook:</label>
+            <input type="text" id="whiteRook" placeholder="a1">
+            <button id="applySetup">Apply</button>
+        </div>
+    <div id="tree"></div>
+    <style>
+        .card {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+    <script>
+        var startingFen = null;
+        const staticBaseUrl = "{{ url_for('static', filename='') }}";
+        var board = null;
+        var game = new Chess();
+        var boardConfig = {
+            draggable: true,
+            position: 'start',
+            onDrop: handleMove,
+            orientation: 'white',
+            pieceTheme: staticBaseUrl + 'img/chesspieces/{piece}.png',
+        };
+    
+        function handleMove(source, target) {
+            var move = game.move({
+                from: source,
+                to: target,
+                promotion: 'q'
+            });
+    
+            if (move === null) return 'snapback';
+
+            window.setTimeout(makeBestMove, 250);             
+        }
+    
+        function makeBestMove() {
+            var bestMove = getBestMove(game.fen());
+            var moveObj = { from: bestMove.substring(0, 2), to: bestMove.substring(2, 4) };
+            game.move(moveObj);
+            board.position(game.fen());
+            checkGameStatus();
+        }
+    
+        function getBestMove(fen) {
+            var move = null;
+            $.ajax({
+                url: '/move', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ board: fen }),
+                async: false,
+                success: function (data) {
+                    move = data.move;
+                    $('#tree').html(data.tree_html); 
+                }
+            });
+            return move;
+        }
+        function checkGameStatus() {
+            if (game.in_checkmate()) {
+                alert("Checkmate! Game Over.");
+            }
+        }
+
+        function restartGame() {
+            $.ajax({
+                url: '/custom_setup', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ fen: startingFen }),
+                success: function (data) {
+                    var fen = data.board_fen;
+                    startingFen = fen;
+                    game.load(fen);
+                    board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
+                }
+            });
+        }
+        
+        function setCustomPosition() {
+            $('#setupControls').toggle();
+        }
+        function applySetup() {
+            var whiteKing = $('#whiteKing').val().trim();
+            var blackKing = $('#blackKing').val().trim();
+            var whiteRook = $('#whiteRook').val().trim();
+
+            if (whiteKing === '' || blackKing === '' || whiteRook === '') {
+                alert('Please enter positions for all pieces.');
+                return;
+            }
+
+            var positionPattern = /^[a-h][1-8]$/;
+            if (!positionPattern.test(whiteKing) || !positionPattern.test(blackKing) || !positionPattern.test(whiteRook)) {
+                alert('Please enter valid positions (e.g., "e1", "a8", etc.).');
+                return;
+            }
+
+            $.ajax({
+                url: '/custom_setup',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ wr: whiteRook, wk: whiteKing, bk: blackKing }),
+                success: function (data) {
+                    var fen = data.board_fen;
+                    startingFen = fen;
+                    game.load(fen);
+                    board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
+                    $('#setupControls').hide();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: '/setup', 
+                type: 'GET',
+                success: function (data) {
+                    var fen = data.board_fen;
+                    startingFen = fen;
+                    game.load(fen);
+                    board = Chessboard('board', Object.assign({}, boardConfig, { position: fen}));
+                }
+            });
+            $('#restartBtn').on('click', restartGame);
+            $('#customPositionBtn').on('click', setCustomPosition);
+            $('#applySetup').on('click', applySetup);
+        });
+
+        
+
+    </script>
+    
+    
+</body>
+</html>
