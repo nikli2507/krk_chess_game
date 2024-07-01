@@ -10,6 +10,7 @@
     <script src="{{ url_for('static', filename='js/vis.min.js') }}"></script>
 </head>
 <body>
+    <div id="board-info"></div> 
     <div id="board" style="width: 400px; margin-bottom: 20px;"></div>
     <div id="controls">
         <button id="restartBtn">Restart</button>
@@ -74,6 +75,7 @@
                 success: function (data) {
                     move = data.move;
                     $('#tree').html(data.tree_html); 
+                    $('#board-info').text(data.board_info);
                 }
             });
             return move;
@@ -95,6 +97,7 @@
                     startingFen = fen;
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
+                    $('#board-info').text(data.board_info);
                 }
             });
         }
@@ -129,6 +132,7 @@
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
                     $('#setupControls').hide();
+                    $('#board-info').text(data.board_info);
                 }
             });
         }
@@ -142,17 +146,13 @@
                     startingFen = fen;
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen}));
+                    $('#board-info').text(data.board_info);
                 }
             });
             $('#restartBtn').on('click', restartGame);
             $('#customPositionBtn').on('click', setCustomPosition);
             $('#applySetup').on('click', applySetup);
         });
-
-        
-
     </script>
-    
-    
 </body>
 </html>

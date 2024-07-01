@@ -1,4 +1,13 @@
 import chess
+import requests
+
+def get_tablebase_info(board_fen):
+    """ Retrieves tablebase information for a given chess board position. """
+    url = f"https://tablebase.lichess.ovh/standard?fen={board_fen}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    return None
 
 def simulate_move(board, move):
     """ Returns the board after the move has been made. """
