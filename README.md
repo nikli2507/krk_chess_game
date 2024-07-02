@@ -11,8 +11,9 @@ The project was done for academic purposes.
 ## Features
 
 - Set up custom board configurations.
-- Automatically find a good move for the given board configuration and force the win for the program
+- Automatically find a good move for the given board configuration and force the win for the program.
 - Provides a simple web interface for interaction.
+- Possibility to show the search tree.
 
 ## Requirements
 
