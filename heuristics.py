@@ -1,5 +1,6 @@
 import chess
-from utils import *
+from utils import * 
+import requests
 
 def get_tablebase_info(board_fen):
     """ Retrieves tablebase information for a given chess board position. """
@@ -24,7 +25,7 @@ def get_board_info(board):
         if dtm is not None:
             full_moves = (-dtm + 1) // 2
             dtm_info = full_moves
-        else:
+        else:   
             dtm_info = "Distance to mate is unknown."
     else:
         dtm_info = "Tablebase info is unavailable."

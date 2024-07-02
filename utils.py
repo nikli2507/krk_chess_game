@@ -1,5 +1,4 @@
 import chess
-import requests
 
 def simulate_move(board, move):
     """ Returns the board after the move has been made. """
