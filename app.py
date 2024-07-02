@@ -5,6 +5,7 @@ from tree_search import get_good_move
 import os
 from heuristics import new_board, get_board_info
 from utils import simulate_move
+from visualization import visualize_tree_interactive
 
 
 app = Flask(__name__)
@@ -53,7 +54,7 @@ def make_move():
         app.root = None
     move, app.root = get_good_move(board, app.root)
 
-    return jsonify({"move": move.uci(), "board_info": get_board_info(simulate_move(board, move))})
+    return jsonify({"move": move.uci(), "board_info": get_board_info(simulate_move(board, move)), "tree_html": visualize_tree_interactive(app.root)})
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8080))

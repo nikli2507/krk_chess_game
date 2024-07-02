@@ -20,6 +20,7 @@
     <div id="controls">
         <button id="restartBtn">Restart</button>
         <button id="customPositionBtn">Set Custom Position</button>
+        <button id="toggleTreeBtn">Hide Tree Visualization</button>
         <div id="setupControls" style="display: none;">
             <label for="whiteKing">White King:</label>
             <input type="text" id="whiteKing" placeholder="e1">
@@ -37,6 +38,7 @@
         }
     </style>
     <script>
+        var treeVisible = true;
         var startingFen = null;
         const staticBaseUrl = "{{ url_for('static', filename='') }}";
         var board = null;
@@ -81,7 +83,9 @@
                 async: false,
                 success: function (data) {
                     move = data.move;
-                    $('#tree').html(data.tree_html); 
+                    if (treeVisible) {
+                        $('#tree').html(data.tree_html); 
+                    }
 
                     $('#stage').text("Stage: " + data.board_info.stage);
                     $('#measure').text("Measure: " + data.board_info.measure);
@@ -109,6 +113,7 @@
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
                     whiteMoveCount = 0;
+                    $('#tree').html(""); 
                     $('#stage').text("Stage: " + data.board_info.stage);
                     $('#measure').text("Measure: " + data.board_info.measure);
                     $('#dtm').text("White moves until mate when playing optimal: " + data.board_info.dtm);
@@ -148,12 +153,20 @@
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
                     whiteMoveCount = 0;
                     $('#setupControls').hide();
+                    $('#tree').html(""); 
                     $('#stage').text("Stage: " + data.board_info.stage);
                     $('#measure').text("Measure: " + data.board_info.measure);
                     $('#dtm').text("White moves until mate when playing optimal: " + data.board_info.dtm);
                     $('#move-count').text("Total moves of white: " + whiteMoveCount);
                 }
             });
+        }
+
+        function toggleTree() {
+            $('#tree').toggle();
+            treeVisible = !treeVisible;
+            $('#toggleTreeBtn').text(treeVisible ? 'Hide Tree Visualization' : 'Show Tree Visualization');
+            $('#tree').html(""); 
         }
 
         $(document).ready(function () {
@@ -165,6 +178,7 @@
                     startingFen = fen;
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen}));
+                    $('#tree').html(""); 
                     $('#stage').text("Stage: " + data.board_info.stage);
                     $('#measure').text("Measure: " + data.board_info.measure);
                     $('#dtm').text("White moves until mate when playing optimal: " + data.board_info.dtm);
@@ -174,6 +188,7 @@
             $('#restartBtn').on('click', restartGame);
             $('#customPositionBtn').on('click', setCustomPosition);
             $('#applySetup').on('click', applySetup);
+            $('#toggleTreeBtn').on('click', toggleTree); 
         });
     </script>
 </body>

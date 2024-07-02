@@ -26,24 +26,24 @@ def visualize_tree_interactive(root):
         if node_id not in net.get_nodes():
             svg = board_to_image_svg(node.board)
             img_uri = svg_to_data_uri(svg)
-            stage = stage(node.board)
+            st = stage(node.board)
             if stage == 2:
-                net.add_node(node_id, label=f'Root Node, Stage {stage} (Measure={m(node.board, stage)})', image=img_uri, shape='image')
+                net.add_node(node_id, label=f'Root Node, Stage {st} (Measure={m(node.board, st)})', image=img_uri, shape='image')
             else:
-                net.add_node(node_id, label=f'Root Node, Stage {stage}', image=img_uri, shape='image')
+                net.add_node(node_id, label=f'Root Node, Stage {st}', image=img_uri, shape='image')
         
         for child in node.children:
             child_id = str(id(child))
             if child_id not in net.get_nodes():
                 svg = board_to_image_svg(child.board)
                 img_uri = svg_to_data_uri(svg)
-                stage = stage(child.board)
+                st = stage(child.board)
                 if child.heuristic == Heuristic.UNDEFINED:
                     net.add_node(child_id, label=' ', image=img_uri, shape='image')
                 elif stage == 2:
-                    net.add_node(child_id, label=f'Stage {stage} (Measure={m(child.board, stage)}), {child.heuristic.name}', image=img_uri, shape='image')
+                    net.add_node(child_id, label=f'Stage {st} (Measure={m(child.board, st)}), {child.heuristic.name}', image=img_uri, shape='image')
                 else:
-                    net.add_node(child_id, label=f'Stage {stage}, {child.heuristic.name}', image=img_uri, shape='image')
+                    net.add_node(child_id, label=f'Stage {st}, {child.heuristic.name}', image=img_uri, shape='image')
             net.add_edge(node_id, child_id, arrows='to')
             add_nodes_edges(child)  # Recursively process each child
 
