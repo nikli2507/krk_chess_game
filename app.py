@@ -43,7 +43,7 @@ def setup_board():
     return jsonify({"board_fen": fen, "board_info": get_board_info(board)})
 
 @app.route('/move', methods=['POST'])
-def make_move():
+def get_move():
     """
     Based on the current board position returns a good move to make for the white player.
     """

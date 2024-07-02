@@ -14,6 +14,7 @@
         <div id="stage"></div>
         <div id="measure"></div>
         <div id="dtm"></div>
+
         <div id="move-count"></div>
     </div>
     <div id="board" style="width: 400px; margin-bottom: 20px;"></div>
@@ -62,18 +63,18 @@
             if (move === null) return 'snapback';
 
             whiteMoveCount++;
-            window.setTimeout(makeBestMove, 250);             
+            window.setTimeout(makeGoodMove, 250);             
         }
     
-        function makeBestMove() {
-            var bestMove = getBestMove(game.fen());
+        function makeGoodMove() {
+            var bestMove = getGoodMove(game.fen());
             var moveObj = { from: bestMove.substring(0, 2), to: bestMove.substring(2, 4) };
             game.move(moveObj);
             board.position(game.fen());
             checkGameStatus();
         }
     
-        function getBestMove(fen) {
+        function getGoodMove(fen) {
             var move = null;
             $.ajax({
                 url: '/move', 
