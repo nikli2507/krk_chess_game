@@ -1,27 +1,27 @@
 import chess
 from utils import *
 
-def get_board_info_string(board):
-    """ Returns a string representation of the current stage, measure and moves until checkmate when playing optimal. """
+def get_board_info(board):
+    """ Returns a dictionary of the current stage, measure and moves until checkmate when playing optimal. """
     st = stage(board)
     
     if st == 2:
         measure = m(board, st)
     else:
-        measure = "N. A."
+        measure = "Only used in stage 2."
 
     tablebase_info = get_tablebase_info(board.fen())
     if tablebase_info:
         dtm = tablebase_info.get("dtm", None)  # distance to mate
         if dtm is not None:
             full_moves = (-dtm + 1) // 2
-            dtm_info = f"Checkmate in {full_moves} when playing optimal."
+            dtm_info = full_moves
         else:
             dtm_info = "Distance to mate is unknown."
     else:
         dtm_info = "Tablebase info is unavailable."
 
-    return f"Stage: {st} Measure: {measure} {dtm_info}"
+    return {"stage": st, "measure": measure, "dtm": dtm_info}
 
 """
 All below methods are described in 'Huberman, Barbara Jane. A program to play chess end games. No. 65. Stanford University, 1968.'

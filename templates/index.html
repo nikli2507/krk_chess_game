@@ -10,7 +10,12 @@
     <script src="{{ url_for('static', filename='js/vis.min.js') }}"></script>
 </head>
 <body>
-    <div id="board-info"></div> 
+    <div id="board-info">
+        <div id="stage"></div>
+        <div id="measure"></div>
+        <div id="dtm"></div>
+        <div id="move-count"></div>
+    </div>
     <div id="board" style="width: 400px; margin-bottom: 20px;"></div>
     <div id="controls">
         <button id="restartBtn">Restart</button>
@@ -43,6 +48,7 @@
             orientation: 'white',
             pieceTheme: staticBaseUrl + 'img/chesspieces/{piece}.png',
         };
+        var whiteMoveCount = 0;
     
         function handleMove(source, target) {
             var move = game.move({
@@ -53,6 +59,7 @@
     
             if (move === null) return 'snapback';
 
+            whiteMoveCount++;
             window.setTimeout(makeBestMove, 250);             
         }
     
@@ -75,7 +82,11 @@
                 success: function (data) {
                     move = data.move;
                     $('#tree').html(data.tree_html); 
-                    $('#board-info').text(data.board_info);
+
+                    $('#stage').text("Stage: " + data.board_info.stage);
+                    $('#measure').text("Measure: " + data.board_info.measure);
+                    $('#dtm').text("White moves until mate when playing optimal: " + data.board_info.dtm);
+                    $('#move-count').text("Total moves of white: " + whiteMoveCount);
                 }
             });
             return move;
@@ -97,7 +108,11 @@
                     startingFen = fen;
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
-                    $('#board-info').text(data.board_info);
+                    whiteMoveCount = 0;
+                    $('#stage').text("Stage: " + data.board_info.stage);
+                    $('#measure').text("Measure: " + data.board_info.measure);
+                    $('#dtm').text("White moves until mate when playing optimal: " + data.board_info.dtm);
+                    $('#move-count').text("Total moves of white: " + whiteMoveCount);
                 }
             });
         }
@@ -131,8 +146,12 @@
                     startingFen = fen;
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen }));
+                    whiteMoveCount = 0;
                     $('#setupControls').hide();
-                    $('#board-info').text(data.board_info);
+                    $('#stage').text("Stage: " + data.board_info.stage);
+                    $('#measure').text("Measure: " + data.board_info.measure);
+                    $('#dtm').text("White moves until mate when playing optimal: " + data.board_info.dtm);
+                    $('#move-count').text("Total moves of white: " + whiteMoveCount);
                 }
             });
         }
@@ -146,7 +165,10 @@
                     startingFen = fen;
                     game.load(fen);
                     board = Chessboard('board', Object.assign({}, boardConfig, { position: fen}));
-                    $('#board-info').text(data.board_info);
+                    $('#stage').text("Stage: " + data.board_info.stage);
+                    $('#measure').text("Measure: " + data.board_info.measure);
+                    $('#dtm').text("White moves until mate when playing optimal: " + data.board_info.dtm);
+                    $('#move-count').text("Total moves of white: " + whiteMoveCount);
                 }
             });
             $('#restartBtn').on('click', restartGame);
