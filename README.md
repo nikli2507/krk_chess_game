@@ -10,10 +10,12 @@ The project was done for academic purposes.
 
 ## Features
 
-- Set up custom board configurations.
-- Automatically find a good move for the given board configuration and force the win for the program.
-- Provides a simple web interface for interaction.
-- Possibility to show the search tree.
+- Play against the AI
+- See heuristic information: current stage, measure, distance to mate when playing optimal, the total number of white moves
+- Setup a custom board position
+- See the current search tree used to find a good move
+- Only access the Flask-API if needed
+
 
 ## Requirements
 

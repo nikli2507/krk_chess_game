@@ -1,6 +1,14 @@
 import chess
 from utils import *
 
+def get_tablebase_info(board_fen):
+    """ Retrieves tablebase information for a given chess board position. """
+    url = f"https://tablebase.lichess.ovh/standard?fen={board_fen}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
 def get_board_info(board):
     """ Returns a dictionary of the current stage, measure and moves until checkmate when playing optimal. """
     st = stage(board)
